@@ -43,7 +43,18 @@ async def send_document(file: UploadFile, sender: str = Form(...)):
 
         with open(save_path, "rb") as f:
             file_data = f.read()
-            message.add_attachment(file_data, "application/pdf", file.filename)
+            from sendgrid.helpers.mail import Attachment, FileContent, FileName, FileType, Disposition
+import base64
+
+encoded = base64.b64encode(file_data).decode()
+attachment = Attachment(
+    FileContent(encoded),
+    FileName(file.filename),
+    FileType('application/pdf'),
+    Disposition('attachment')
+)
+message.attachment = attachment
+
 
         sg = SendGridAPIClient(SENDGRID_API_KEY)
         sg.send(message)
