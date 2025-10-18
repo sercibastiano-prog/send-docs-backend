@@ -7,6 +7,22 @@ from sendgrid.helpers.mail import Mail
 
 app = FastAPI()
 
+from fastapi.responses import HTMLResponse
+
+@app.get("/form", response_class=HTMLResponse)
+def upload_form():
+    return """
+    <html><body>
+    <h3>Upload documento</h3>
+    <form action="/send-document/" method="post" enctype="multipart/form-data">
+      Mittente (email): <input type="email" name="sender" value="noreply@senddocs.local" required/><br/><br/>
+      File (PDF): <input type="file" name="file" required/><br/><br/>
+      <button type="submit">Invia</button>
+    </form>
+    </body></html>
+    """
+
+
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 RECEIVER_EMAIL = os.getenv("RECEIVER_EMAIL", "office@company.com")
 
